@@ -103,7 +103,7 @@
                 } else {
                     root += this.url;
                 }
-                return "[" + this.method + "] " + root;
+                return "[" + this.method.toLowerCase() + "] " + root;
             } else {
                 return "coap";
             }
