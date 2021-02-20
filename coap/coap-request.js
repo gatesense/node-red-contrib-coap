@@ -14,6 +14,7 @@ module.exports = function (RED) {
 
         // copy "coap request" configuration locally
         node.options = {};
+        node.options.useIPv6Agent = n.useIPv6Agent;
         node.options.method = n.method;
         node.options.observe = n.observe;
         node.options.name = n.name;
@@ -45,6 +46,10 @@ module.exports = function (RED) {
             ).toUpperCase();
             reqOpts.headers = {};
             reqOpts.headers["Content-Format"] = node.options.contentFormat;
+
+            if (node.options.useIPv6Agent) {
+                reqOpts.agent = coap.globalAgentIPv6;
+            }
 
             function _onResponse(res) {
                 function _send(payload) {

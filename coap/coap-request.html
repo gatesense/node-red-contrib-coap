@@ -11,6 +11,7 @@
                     );
                 },
             },
+            useIPv6Agent: { value: false, required: true },
             observe: { value: false, required: true },
             url: { value: "" },
             "content-format": { value: "text/plain" },
@@ -50,6 +51,10 @@
             <option value="POST">POST</option>
             <option value="DELETE">DELETE</option>
         </select>
+    </div>
+    <div class="form-row">
+        <input type="checkbox" id="node-input-useIPv6Agent" style="display: inline-block; width: auto; vertical-align: top;">
+        <label for="node-input-useIPv6Agent" style="width: auto" data-i18n="coapRequest.inputIPv6.label"></label>
     </div>
     <div class="form-row">
         <input type="checkbox" id="node-input-observe" style="display: inline-block; width: auto; vertical-align: top;">
