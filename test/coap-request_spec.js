@@ -922,5 +922,75 @@ describe("CoapRequestNode", function () {
                 server.listen(port);
             });
         });
+
+        it("should be able to process multiple responses if the multicast option is set", function (done) {
+            var port = getPort();
+            var MULTICAST_ADDR = '224.0.0.1';
+            var flow = [
+                {
+                    id: "n1",
+                    type: "inject",
+                    name: "inject",
+                    payload: "",
+                    payloadType: "none",
+                    repeat: "",
+                    crontab: "",
+                    once: true,
+                    wires: [["n2"]],
+                },
+                {
+                    id: "n2",
+                    type: "coap request",
+                    "content-format": "text/plain",
+                    method: "GET",
+                    name: "coapRequest",
+                    observe: false,
+                    "raw-buffer": false,
+                    multicast: true,
+                    url: "coap://" + MULTICAST_ADDR  + ":" + port + "/test-resource",
+                    wires: [["n3"]],
+                },
+                {
+                    id: "n3",
+                    type: "end-test-node",
+                    name: "end-test-node",
+                },
+            ];
+
+            var number_of_reponses = 0;
+
+            function endTestNode(RED) {
+                function EndTestNode(n) {
+                    RED.nodes.createNode(this, n);
+                    this.on("input", function (msg) {
+                        number_of_reponses++;
+                        if (number_of_reponses == 2) {
+                            done();
+                        }
+                    });
+                }
+                RED.nodes.registerType("end-test-node", EndTestNode);
+            }
+
+            var testNodes = [coapRequestNode, injectNode, endTestNode];
+            var message = "Got it!";
+
+            // let's make a CoAP server to respond to our requests (no matter how silly they are)
+            var server = coap.createServer({"multicastAddress": MULTICAST_ADDR});
+            var server2 = coap.createServer({"multicastAddress": MULTICAST_ADDR});
+
+            server.on("request", function (req, res) {
+                res.end(message);
+            });
+
+            server2.on("request", function (req, res) {
+                res.end(message);
+            });
+
+            helper.load(testNodes, flow, function () {
+                server.listen(port);
+                server2.listen(port);
+            });
+        });
     });
 });

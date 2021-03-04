@@ -15,6 +15,12 @@
         "inputMethod": {
             "label": "Methode"
         },
+        "inputMulticast": {
+            "label": "Multicast erzwingen"
+        },
+        "inputMulticastTimeout": {
+            "label": "Multicast-Timeout (in ms)"
+        },
         "inputObserve": {
             "label": "Observe?"
         },

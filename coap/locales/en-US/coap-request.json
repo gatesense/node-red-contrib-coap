@@ -15,6 +15,12 @@
         "inputMethod": {
             "label": "Method"
         },
+        "inputMulticast": {
+            "label": "Force multicast"
+        },
+        "inputMulticastTimeout": {
+            "label": "Multicast timeout (in ms)"
+        },
         "inputObserve": {
             "label": "Observe?"
         },
