@@ -1,9 +1,11 @@
 {
-    "coapIn": {
+    "common": {
         "inputName": {
             "label": "Name",
             "placeholder": "Name"
-        },
+        }
+    },
+    "coapIn": {
         "inputURL": {
             "label": "URL",
             "placeholder": "/foo"
@@ -15,11 +17,14 @@
             "label": "Server"
         }
     },
-    "coapServer": {
-        "configInputName": {
-            "label": "Name",
-            "placeholder": "Name"
+    "coapResponse": {
+        "inputURL": {
+            "label": "URL",
+            "placeholder": "/foo"
         },
+        "tip": "<em>CoAP</em> is based on <em>UDP</em> so you may need to open a <em>UDP</em> port in your firewall."
+    },
+    "coapServer": {
         "configInputIPv6": {
             "label": "Support IPv6"
         },
