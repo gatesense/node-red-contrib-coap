@@ -9,7 +9,7 @@ This project adds CoAP support to [Node-RED](http://nodered.org/). It is based o
 
 Functionality
 -------------
- We introduce "coap request" and "coap in" nodes which can be used in a similar fashion to "http request"and "http in" nodes from Node-RED's core.
+ We introduce "coap request", "coap in", and "coap response" nodes which can be used in a similar fashion to "http request", "http in", and "http reponse" nodes from Node-RED's core.
 
 Install
 -------
