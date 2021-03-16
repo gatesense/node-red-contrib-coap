@@ -18,11 +18,10 @@
         }
     },
     "coapResponse": {
-        "inputURL": {
-            "label": "URL",
-            "placeholder": "/foo"
+        "statusCode": {
+            "label": "Status-Code"
         },
-        "tip": "<em>CoAP</em> is based on <em>UDP</em> so you may need to open a <em>UDP</em> port in your firewall."
+        "tip": "The messages sent to this node <strong>must</strong> originate from an <em>coap input</em> node."
     },
     "coapServer": {
         "configInputIPv6": {
