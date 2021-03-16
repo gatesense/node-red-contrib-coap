@@ -16,7 +16,7 @@
             "label": "Multicast erzwingen"
         },
         "inputMulticastTimeout": {
-            "label": "Multicast-Timeout (in ms)"
+            "label": "Timeout (in ms)"
         },
         "inputObserve": {
             "label": "Observe?"
