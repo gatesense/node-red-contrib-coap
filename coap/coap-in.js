@@ -48,8 +48,14 @@ module.exports = function (RED) {
         var urlExists = false;
         var methodExists = false;
         var newNodeOptions = resource.options;
+
+        if (newNodeOptions.url == "/.well-known/core" && this.options.wellknowncore) {
+            this.error("Nodes can't have the URL /.well-known/core if it is enabled on the server!");
+        }
+
         for (var i = 0; i < this._inputNodes.length; i++) {
-            let existingNodeOptions = this._inputNodes[i].options;
+            var existingNodeOptions = this._inputNodes[i].options;
+            
             if (existingNodeOptions.url == newNodeOptions.url) {
                 urlExists = true;
                 if (existingNodeOptions.method == newNodeOptions.method) {
@@ -61,7 +67,9 @@ module.exports = function (RED) {
             }
         }
         if (!urlExists) {
-            this._resourceList.push(newNodeOptions.url);
+            if (this.options.wellknowncore) {
+                this._resourceList.push(newNodeOptions.url);
+            }
             if (!methodExists) {
                 this._inputNodes.push(resource);
             }
@@ -70,10 +78,10 @@ module.exports = function (RED) {
 
     CoapServerNode.prototype._handleWellKnownCore = function (res) {
         // TODO: Expand capabilities of the handler for /.well-known/core
-        let formattedResources = this._resourceList.map(function (resource) {
+        var formattedResources = this._resourceList.map(function (resource) {
             return `<${resource}>`;
         })
-        let payload = formattedResources.join(",");
+        var payload = formattedResources.join(",");
         res.code = "2.05";
         res.setOption("Content-Format", "application/link-format");
         return res.end(payload);
