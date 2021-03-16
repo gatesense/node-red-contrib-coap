@@ -79,13 +79,13 @@ module.exports = function (RED) {
     CoapServerNode.prototype._handleWellKnownCore = function (res) {
         // TODO: Expand capabilities of the handler for /.well-known/core
         var formattedResources = this._resourceList.map(function (resource) {
-            return `<${resource}>`;
-        })
+            return "<" + resource + ">";
+        });
         var payload = formattedResources.join(",");
         res.code = "2.05";
         res.setOption("Content-Format", "application/link-format");
         return res.end(payload);
-    }
+    };
 
     CoapServerNode.prototype.handleRequest = function (req, res) {
         if (this.options.wellknowncore && req.url == "/.well-known/core" && req.method == "GET") {
