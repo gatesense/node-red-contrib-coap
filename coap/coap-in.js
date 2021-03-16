@@ -172,18 +172,8 @@ module.exports = function (RED) {
             return payload;
         }
 
-        function _determineStatusCode(options, msg) {
-            if (options.code) {
-                return options.code;
-            } else if (msg.statusCode) {
-                return msg.statusCode;
-            } else {
-                return "2.05";
-            }
-        }
-
         this.on("input", function (msg, _send, done) {
-            var code = _determineStatusCode(node.options, msg);
+            var code = this.options.code || msg.statusCode || "2.05";
             var contentFormat = msg.contentFormat || node.options.contentFormat;
             var payload = _constructPayload(msg, contentFormat);
 

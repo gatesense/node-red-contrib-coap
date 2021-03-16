@@ -21,7 +21,7 @@
         "statusCode": {
             "label": "Status-Code"
         },
-        "tip": "<em>CoAP</em> basiert auf <em>UDP</em>, weshalb es sein kann, dass Sie einen <em>UDP</em>-Port in Ihrer Firewall öffnen müssen."
+        "tip": "Die an diesen Node gesendeten Nachrichten <strong>müssen</strong> von einem <em>coap-Input</em>-Node stammen"
     },
     "coapServer": {
         "configInputIPv6": {
