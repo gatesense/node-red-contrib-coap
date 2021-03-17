@@ -24,7 +24,7 @@ Install from Source
 
 ```bash
 cd $NODE_RED_HOME/nodes
-git clone https://github.com/reederz/node-red-contrib-coap.git
+git clone https://github.com/JKRhb/node-red-contrib-coap.git
 cd ./node-red-contrib-coap
 npm install
 ```

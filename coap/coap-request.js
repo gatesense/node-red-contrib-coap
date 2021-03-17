@@ -73,7 +73,11 @@ module.exports = function (RED) {
                     } else if (
                         res.headers["Content-Format"] === "application/json"
                     ) {
-                        _send(JSON.parse(data.toString()));
+                        try {
+                            _send(JSON.parse(data.toString()));   
+                        } catch (error) {
+                            node.error(error.message);
+                        }
                     } else if (
                         res.headers["Content-Format"] === "application/cbor"
                     ) {

@@ -24,10 +24,10 @@
         "inputObserve": {
             "label": "Observe?"
         },
-        "rawBuffer": {
+        "inputRawBuffer": {
             "label": "Raw buffer?"
         },
-        "contentFormat": {
+        "inputContentFormat": {
             "label": "Content format"
         },
         "tip": "Tip: Leave url or method blank if you want to set them via msg properties."
