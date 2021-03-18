@@ -26,6 +26,9 @@
         "configInputPort": {
             "label": "Port"
         },
+        "configInputwellKnownCore": {
+            "label": "Activate /.well-known/core"
+        },
         "tip": "<em>CoAP</em> is based on <em>UDP</em> so you may need to open a <em>UDP</em> port in your firewall."
     }
 }

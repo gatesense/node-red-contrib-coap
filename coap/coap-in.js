@@ -13,8 +13,10 @@ module.exports = function (RED) {
         node.options.name = n.name;
         node.options.port = n.port;
         node.options.ipv6 = n.ipv6;
+        node.options.wellknowncore = n.wellknowncore;
 
         node._inputNodes = []; // collection of "coap in" nodes that represent coap resources
+        node._resourceList = []; // resource list for /.well-known/core
 
         // Setup node-coap server and start
         var serverSettings = {};
@@ -32,7 +34,6 @@ module.exports = function (RED) {
             });
         });
         node.server.listen(node.options.port, function () {
-            //console.log('server started');
             node.log("CoAP Server Started");
         });
 
@@ -44,27 +45,53 @@ module.exports = function (RED) {
     RED.nodes.registerType("coap-server", CoapServerNode);
 
     CoapServerNode.prototype.registerInputNode = function (/*Node*/ resource) {
-        var exists = false;
-        for (var i = 0; i < this._inputNodes.length; i++) {
-            if (
-                this._inputNodes[i].options.url == resource.options.url &&
-                this._inputNodes[i].options.method == resource.options.method
-            ) {
-                exists = true;
+        var urlExists = false;
+        var methodExists = false;
+        var newNodeOptions = resource.options;
 
-                //TODO: Does this have any effect? Should show the error in the frontend somehow? Some kind of status bar?
-                this.error(
-                    "Node with the specified URL and Method already exists!"
-                );
+        if (newNodeOptions.url == "/.well-known/core" && this.options.wellknowncore) {
+            this.error("Nodes can't have the URL /.well-known/core if it is enabled on the server!");
+        }
+
+        for (var i = 0; i < this._inputNodes.length; i++) {
+            var existingNodeOptions = this._inputNodes[i].options;
+            
+            if (existingNodeOptions.url == newNodeOptions.url) {
+                urlExists = true;
+                if (existingNodeOptions.method == newNodeOptions.method) {
+                    methodExists = true;
+    
+                    //TODO: Does this have any effect? Should show the error in the frontend somehow? Some kind of status bar?
+                    this.error("Node with the specified URL and Method already exists!");
+                }
             }
         }
-        if (!exists) {
-            this._inputNodes.push(resource);
+        if (!urlExists) {
+            if (this.options.wellknowncore) {
+                this._resourceList.push(newNodeOptions.url);
+            }
+            if (!methodExists) {
+                this._inputNodes.push(resource);
+            }
         }
     };
 
+    CoapServerNode.prototype._handleWellKnownCore = function (res) {
+        // TODO: Expand capabilities of the handler for /.well-known/core
+        var formattedResources = this._resourceList.map(function (resource) {
+            return "<" + resource + ">";
+        });
+        var payload = formattedResources.join(",");
+        res.code = "2.05";
+        res.setOption("Content-Format", "application/link-format");
+        return res.end(payload);
+    };
+
     CoapServerNode.prototype.handleRequest = function (req, res) {
-        //TODO: Check if there are any matching resource. If the resource is .well-known return the resource directory to the client
+        if (this.options.wellknowncore && req.url == "/.well-known/core" && req.method == "GET") {
+            return this._handleWellKnownCore(res);
+        }
+
         var matchResource = false;
         var matchMethod = false;
         for (var i = 0; i < this._inputNodes.length; i++) {

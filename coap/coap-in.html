@@ -7,12 +7,16 @@
         <input type="text" id="node-config-input-name" data-i18n="[placeholder]coapServer.configInputName.placeholder" />
     </div>
     <div class="form-row">
-        <input type="checkbox" id="node-input-ipv6" style="display: inline-block; width: auto; vertical-align: top;">
-        <label for="node-input-ipv6" style="width: auto" data-i18n="coapServer.configInputIPv6.label"></label>
-    </div>
-    <div class="form-row">
         <label for="node-config-input-port"><span data-i18n="coapServer.configInputPort.label"></span></label>
         <input type="text" id="node-config-input-port" placeholder="5683" />
+    </div>
+    <div class="form-row">
+        <input type="checkbox" id="node-config-input-wellknowncore" style="display: inline-block; width: auto; vertical-align: top;">
+        <label for="node-config-input-wellknowncore" style="width: auto" data-i18n="coapServer.configInputwellKnownCore.label"></label>
+    </div>
+    <div class="form-row">
+        <input type="checkbox" id="node-config-input-ipv6" style="display: inline-block; width: auto; vertical-align: top;">
+        <label for="node-config-input-ipv6" style="width: auto" data-i18n="coapServer.configInputIPv6.label"></label>
     </div>
     <div class="form-tips">
         <span data-i18n="[html]coapServer.tip">
@@ -26,6 +30,7 @@
             name: { value: "" },
             port: { value: 5683, required: true },
             ipv6: { value: true, required: true },
+            wellknowncore: { value: false, required: true },
         },
         inputs: 0,
         outputs: 0,
