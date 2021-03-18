@@ -132,11 +132,18 @@ describe("CoapInNode", function () {
                                 {
                                     id: "n3",
                                     type: "function",
-                                    name: "coapOutGet",
+                                    name: "setPayload",
                                     func:
-                                        "msg.res.end('" +
+                                        "msg.payload = '" +
                                         test.message +
-                                        "');\nreturn msg;",
+                                        "';\nreturn msg;",
+                                    wires: [["n4"]],
+                                },
+                                {
+                                    id: "n4",
+                                    type: "coap response",
+                                    name: "coapOutGet",
+                                    statusCode: "",
                                     wires: [],
                                 },
                             ];
@@ -183,7 +190,7 @@ describe("CoapInNode", function () {
             ];
 
             // Need to register nodes in order to use them
-            var testNodes = [functionNode, coapInNode];
+            var testNodes = [coapInNode];
             helper.load(testNodes, flow, function () {
                 var urlStr = "coap://localhost:8888/test";
                 var opts = url.parse(urlStr);

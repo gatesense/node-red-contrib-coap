@@ -1,9 +1,11 @@
 {
-    "coapIn": {
+    "common": {
         "inputName": {
             "label": "Name",
             "placeholder": "Name"
-        },
+        }
+    },
+    "coapIn": {
         "inputURL": {
             "label": "URL",
             "placeholder": "/foo"
@@ -15,11 +17,13 @@
             "label": "Server"
         }
     },
-    "coapServer": {
-        "configInputName": {
-            "label": "Name",
-            "placeholder": "Name"
+    "coapResponse": {
+        "statusCode": {
+            "label": "Status-Code"
         },
+        "tip": "The messages sent to this node <strong>must</strong> originate from an <em>coap input</em> node."
+    },
+    "coapServer": {
         "configInputIPv6": {
             "label": "Support IPv6"
         },
