@@ -9,6 +9,9 @@
             "label": "URL",
             "placeholder": "coap://localhost/test"
         },
+        "inputIPv6": {
+            "label": "IPv6-Agent verwenden"
+        },
         "inputMethod": {
             "label": "Methode"
         },
