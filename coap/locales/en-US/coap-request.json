@@ -16,7 +16,7 @@
             "label": "Force multicast"
         },
         "inputMulticastTimeout": {
-            "label": "Multicast timeout (in ms)"
+            "label": "Timeout (in ms)"
         },
         "inputObserve": {
             "label": "Observe?"
@@ -26,6 +26,27 @@
         },
         "inputContentFormat": {
             "label": "Content format"
+        },
+        "return": {
+            "label": "Return",
+            "utf8": "a UTF-8 string",
+            "binary": "a binary buffer",
+            "json": "a parsed JSON object",
+            "cbor": "a parsed CBOR object"
+        },
+        "setby": {
+            "label": "- set by msg.method -"
+        },
+        "paytoqs": {
+            "label": "Payload",
+            "ignore": "Ignore",
+            "query": "Append to query-string parameters",
+            "body": "Send as request body"
+        },
+        "status": {
+            "observing": "observing",
+            "requesting": "requesting",
+            "no-response": "no response from server"
         },
         "tip": "Tip: Leave url or method blank if you want to set them via msg properties."
     }

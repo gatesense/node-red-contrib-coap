@@ -16,8 +16,8 @@
             multicastTimeout: { value: 20000, required: false },
             url: { value: "" },
             "content-format": { value: "text/plain" },
-            "raw-buffer": { value: false, required: true },
             name: { value: "" },
+            paytoqs: {value: false},
         },
         inputs: 1,
         outputs: 1,
@@ -29,10 +29,50 @@
         labelStyle: function () {
             return this.name ? "node_label_italic" : "";
         },
+        oneditprepare: function () {
+            function updateMulticastOptions() {
+                if ($("#node-input-multicast").is(":checked")) {
+                    $("#node-input-multicast-row").show();
+                } else {
+                    $("#node-input-multicast-row").hide();
+                }
+            }
+            if (this.multicast) {
+                $("#node-input-multicast").prop("checked", true);
+            } else {
+                $("#node-input-multicast").prop("checked", false);
+            }
+            updateMulticastOptions();
+            $("#node-input-multicast").on("click", function() {
+                updateMulticastOptions();
+            });
+            $("#node-input-method").on("change", function() {
+                if ($(this).val() == "GET") {
+                    $(".node-input-paytoqs-row").show();
+                } else {
+                    $(".node-input-paytoqs-row").hide();
+                }
+            });
+            if (this.paytoqs === true || this.paytoqs == "query") {
+                $("#node-input-paytoqs").val("query");
+            } else if (this.paytoqs === "body") {
+                $("#node-input-paytoqs").val("body");
+            } else {
+                $("#node-input-paytoqs").val("ignore");
+            }
+            $("#node-input-method").on("change", function() {
+                if ($(this).val() === "GET") {
+                    $(".form-row-coap-request-observe").show();
+                } else {
+                    $(".form-row-coap-request-observe").hide();
+                }
+            }).change();
+        }
     });
 </script>
 
 <script type="text/html" data-template-name="coap request">
+
     <div class="form-row">
         <label for="node-input-url"> <i class="fa fa-globe"></i> <span data-i18n="coapRequest.inputURL.label"></span> </label>
         <input
@@ -41,40 +81,49 @@
             data-i18n="[placeholder]coapRequest.inputURL.placeholder"
         />
     </div>
+
     <div class="form-row">
         <label for="node-input-method">
             <i class="fa fa-tasks"></i> <span data-i18n="coapRequest.inputMethod.label"></span>
         </label>
         <select id="node-input-method">
-            <option value=""></option>
             <option value="GET">GET</option>
             <option value="PUT">PUT</option>
             <option value="POST">POST</option>
             <option value="DELETE">DELETE</option>
+            <option value="use" data-i18n="coapRequest.setby.label"></option>
         </select>
     </div>
-    <div class="form-row">
+    
+    <div class="form-row node-input-paytoqs-row">
+        <label for="node-input-paytoqs"><span data-i18n="coapRequest.paytoqs.label"></span></label>
+        <select id="node-input-paytoqs" style="width: 70%;">
+            <option value="ignore" data-i18n="coapRequest.paytoqs.ignore"></option>
+            <option value="query" data-i18n="coapRequest.paytoqs.query"></option>
+            <option value="body" data-i18n="coapRequest.paytoqs.body"></option>
+        </select>
+    </div>
+
+    <div class="form-row form-row-coap-request-observe hide">
         <input type="checkbox" id="node-input-observe" style="display: inline-block; width: auto; vertical-align: top;">
         <label for="node-input-observe" style="width: auto" data-i18n="coapRequest.inputObserve.label"></label>
     </div>
 
     <div class="form-row">
-        <input type="checkbox" id="node-input-raw-buffer" style="display: inline-block; width: auto; vertical-align: top;">
-        <label for="node-input-raw-buffer" style="width: auto" data-i18n="coapRequest.inputRawBuffer.label"></label>
-    </div>
-
-    <div class="form-row">
         <input type="checkbox" id="node-input-multicast" style="display: inline-block; width: auto; vertical-align: top;">
         <label for="node-input-multicast" style="width: auto" data-i18n="coapRequest.inputMulticast.label"></label>
+
+        <div id="node-input-multicast-row" class="hide">
+            <label style="width: auto; margin-left: 20px; margin-right: 10px;" for="node-input-multicast-timeout">
+                <i class="fa fa-clock-o"></i>
+                <span data-i18n="coapRequest.inputMulticastTimeout.label"></span>
+            </label>
+            <input style="width: 270px" type="text" id="node-input-multicast-timeout" placeholder="20000" />
+        </div>
     </div>
-    <div class="form-row">
-        <label for="node-input-multicast-timeout">
-            <i class="fa fa-clock-o"></i>
-            <span data-i18n="coapRequest.inputMulticastTimeout.label"></span>
-        </label>
-        <input type="text" id="node-input-multicast-timeout" placeholder="20000" />
-    </div>
-    <div class="form-row">
+
+
+    <!-- <div class="form-row">
         <label for="node-input-content-format">
             <i class="fa fa-file"></i> <span data-i18n="coapRequest.inputContentFormat.label"></span>
         </label>
@@ -83,13 +132,26 @@
             <option>application/json</option>
             <option>application/cbor</option>
         </select>
+    </div> -->
+
+    <div class="form-row">
+        <label for="node-input-content-format"><i class="fa fa-arrow-left"></i> <span data-i18n="coapRequest.return.label"></span></label>
+        <select type="text" id="node-input-content-format" style="width:70%;">
+        <option value="text/plain" data-i18n="coapRequest.return.utf8"></option>
+        <option value="raw-buffer" data-i18n="coapRequest.return.binary"></option>
+        <option value="application/json" data-i18n="coapRequest.return.json"></option>
+        <option value="application/cbor" data-i18n="coapRequest.return.cbor"></option>
+        </select>
     </div>
+
     <div class="form-row">
         <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="coapRequest.inputName.label"></label>
         <input type="text" id="node-input-name" data-i18n="[placeholder]coapRequest.inputName.placeholder" />
     </div>
+
     <div class="form-tips">
         <span data-i18n="[html]coapRequest.tip">
     </div>
+
 </script>
 

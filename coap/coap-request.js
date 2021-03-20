@@ -25,8 +25,11 @@ module.exports = function (RED) {
         function _constructPayload(msg, contentFormat) {
             var payload = null;
 
-            if (contentFormat === "text/plain") {
-                payload = msg.payload;
+            if (!msg.payload) {
+                return null;
+            }
+            else if (contentFormat === "text/plain") {
+                payload = msg.payload.toString();
             } else if (contentFormat === "application/json") {
                 payload = JSON.stringify(msg.payload);
             } else if (contentFormat === "application/cbor") {
@@ -51,6 +54,9 @@ module.exports = function (RED) {
 
             function _onResponse(res) {
                 function _send(payload) {
+                    if (!node.options.observe) {
+                        node.status({});
+                    }
                     node.send(
                         Object.assign({}, msg, {
                             payload: payload,
@@ -61,31 +67,30 @@ module.exports = function (RED) {
                 }
 
                 function _onResponseData(data) {
+
+                    var contentFormat = res.headers["Content-Format"];
+
                     if (node.options.rawBuffer) {
                         _send(data);
-                    } else if (res.headers["Content-Format"] === "text/plain") {
+                    } else if (contentFormat === "text/plain") {
                         _send(data.toString());
-                    } else if (
-                        res.headers["Content-Format"] === "application/json"
-                    ) {
+                    } else if (contentFormat === "application/json") {
                         try {
                             _send(JSON.parse(data.toString()));   
                         } catch (error) {
+                            node.status({fill:"red", shape:"ring", text:error.message});
                             node.error(error.message);
                         }
-                    } else if (
-                        res.headers["Content-Format"] === "application/cbor"
-                    ) {
-                        cbor.decodeAll(data, function (err, data) {
-                            if (err) {
+                    } else if (contentFormat === "application/cbor") {
+                        cbor.decodeAll(data, function (error, data) {
+                            if (error) {
+                                node.error(error.message);
+                                node.status({fill:"red", shape:"ring", text:error.message});
                                 return false;
                             }
                             _send(data[0]);
                         });
-                    } else if (
-                        res.headers["Content-Format"] ===
-                        "application/link-format"
-                    ) {
+                    } else if (contentFormat === "application/link-format") {
                         _send(linkFormat.parse(data.toString()));
                     } else {
                         _send(data.toString());
@@ -95,28 +100,30 @@ module.exports = function (RED) {
                 res.on("data", _onResponseData);
 
                 if (reqOpts.observe) {
+                    node.status({fill:"blue",shape:"dot",text:"coapRequest.status.observing"});
                     node.stream = res;
                 }
             }
 
             var payload = _constructPayload(msg, node.options.contentFormat);
 
-            if (node.options.observe === true) {
+            if (node.options.observe) {
                 reqOpts.observe = "1";
             } else {
                 delete reqOpts.observe;
             }
 
-            //TODO: should revisit this block
+            // TODO: should revisit this block
             if (node.stream) {
                 node.stream.close();
             }
 
             var req = coap.request(reqOpts);
             req.on("response", _onResponse);
-            req.on("error", function (err) {
+            req.on("error", function (error) {
+                node.status({fill:"red", shape:"ring", text:error.message});
                 node.log("client error");
-                node.log(err);
+                node.log(error.message);
             });
 
             if (payload) {
@@ -126,7 +133,12 @@ module.exports = function (RED) {
         }
 
         this.on("input", function (msg) {
+            node.status({fill:"blue",shape:"dot",text:"coapRequest.status.requesting"});
             _makeRequest(msg);
+        });
+
+        this.on("close",function() {
+            node.status({});
         });
     }
     RED.nodes.registerType("coap request", CoapRequestNode);
