@@ -27,6 +27,11 @@
         "inputContentFormat": {
             "label": "Content-Format"
         },
+        "status": {
+            "observing": "beobachten",
+            "requesting": "anfordern",
+            "no-response": "Keine Antwort vom Server"
+        },
         "tip": "Tipp: Lassen Sie den URL oder die Methode leer, wenn Sie diese über msg-Eigenschaften definieren wollen."
     }
 }

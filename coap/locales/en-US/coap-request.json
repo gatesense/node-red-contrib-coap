@@ -43,6 +43,11 @@
             "query": "Append to query-string parameters",
             "body": "Send as request body"
         },
+        "status": {
+            "observing": "observing",
+            "requesting": "requesting",
+            "no-response": "no response from server"
+        },
         "tip": "Tip: Leave url or method blank if you want to set them via msg properties."
     }
 }
